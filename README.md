@@ -11,7 +11,7 @@ by clicking Start again without refreshing the page.
 ## Uses
 
 - HTML, Javascript, CSS
-- Simplified equation of [Bouncing_ball](https://en.wikipedia.org/wiki/Bouncing_ball)
+- Simplified equation of [Bouncing_ball](https://en.wikipedia.org/wiki/Bouncing_ball).
 Drag effect is modeled as happening only when the ball reaches the surface frame,
 with a constant for the viscosity of the surface.
 
