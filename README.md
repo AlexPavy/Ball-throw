@@ -15,8 +15,6 @@ by clicking Start again without refreshing the page.
 Drag effect is modeled as happening only when the ball reaches the surface frame,
 with a constant for the viscosity of the surface.
 
-Test for [bouncing-balls](https://github.com/hfour/exercises/tree/master/bouncing-balls)
-
 ## Code structure
 
 Lightweight code in one file and the main loop in move() to move the ball
