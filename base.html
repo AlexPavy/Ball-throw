@@ -14,6 +14,7 @@
         }
 
         #ball {
+            display: none;
             position: absolute;
             background-color: #00801b;
             border-radius: 50%;
@@ -90,7 +91,7 @@
                     this.v_x = this.v_x / GROUND_SLOW_FACTOR;
                 }
                 if (this.y < MIN_Y) {
-                    this.y = 2 * MIN_Y - y;
+                    this.y = 2 * MIN_Y - this.y;
                     this.v_y = -(this.v_y / GROUND_SLOW_FACTOR);
                     this.v_x = this.v_x / GROUND_SLOW_FACTOR;
                 }
@@ -110,7 +111,7 @@
                 }
 
                 this.display();
-                setTimeout(this.move, FREQ);
+                setTimeout(this.move.bind(this), FREQ);
             }
 
             display() {
