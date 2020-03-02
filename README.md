@@ -3,17 +3,16 @@
 ## How to run
 
 Open [base.html](./base.html) in a browser
-Click Start
+Click inside the frame
 
-The initial y-speed and x-speed can be modified to any value,
-by clicking Start again without refreshing the page.
+The initial y-speed and x-speed are random values
 
 ## Uses
 
 - HTML, Javascript, CSS
 - Simplified equation of [Bouncing_ball](https://en.wikipedia.org/wiki/Bouncing_ball).
 Drag effect is modeled as happening only when the ball reaches the surface frame,
-with a constant for the viscosity of the surface.
+with a constant for the speed reduction on bounces.
 
 ## Code structure
 

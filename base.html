@@ -1,156 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Ball throw</title>
-    <style>
+  <meta charset="UTF-8">
+  <title>Ball throw</title>
+  <style>
 
-        #frame {
-            display: none;
-            border: 3px #111111;
-            margin: 10px;
-            background-color: #d8d7ea;
-            position: relative;
+    #frame {
+      display: none;
+      border: 3px #111111;
+      margin: 10px;
+      background-color: #d8d7ea;
+      position: relative;
+    }
+
+  </style>
+  <script>
+    console.log("Ball throw");
+
+    /** Static parameters */
+    const PANEL_WIDTH = 1000; // px
+    const PANEL_HEIGHT = 600; // px
+    const FREQ = 3; // milliseconds
+    const BALL_SIZE = 10; // px
+    const GROUND_SLOW_FACTOR = 1.3; // no unit
+    const G = 0.001; // px / milliseconds^2
+    const ZERO_SPEED_THRESHOLD = 0.0005; // px / milliseconds
+    const ZERO_HEIGHT_THRESHOLD = PANEL_HEIGHT / 1000.0; // no unit
+    const INITIAL_SPEED_FACTOR = 3; // px / milliseconds
+
+    /** Calculated constants */
+    const MAX_Y = PANEL_HEIGHT - BALL_SIZE; // px
+    const MIN_Y = BALL_SIZE; // px
+    const MAX_X = PANEL_WIDTH - BALL_SIZE; // px
+    const MIN_X = BALL_SIZE; // px
+
+    class BallEngine {
+
+      constructor(ball, x, y) {
+        /** Variables */
+        this.ball = ball; // dom element
+        this.x = x; // px
+        this.y = y;
+        this.v_x = 0; // px / milliseconds
+        this.v_y = 0; // px / milliseconds
+        this.t1 = null; // milliseconds
+      }
+
+      start(v_x, v_y) {
+        this.v_x += v_x;
+        this.v_y += v_y;
+        this.t1 = new Date().getTime();
+        this.display();
+        this.ball.style.display = "block";
+        this.move();
+      }
+
+      move() {
+        const now = new Date().getTime();
+        const t = now - this.t1;
+        this.t1 = now;
+        console.log(
+          `t:${t} ; x:${this.x} ; y:${this.y} ; v_x:${this.v_x} ; v_y:${this.v_y}`
+        );
+
+        if (
+          (MAX_Y - this.y) < ZERO_HEIGHT_THRESHOLD
+          && Math.abs(this.v_y) < ZERO_SPEED_THRESHOLD
+          && Math.abs(this.v_x) < ZERO_SPEED_THRESHOLD
+        ) {
+          this.v_x = 0;
+          this.v_y = 0;
+          this.display();
+          return;
         }
 
-        #ball {
-            display: none;
-            position: absolute;
-            background-color: #00801b;
-            border-radius: 50%;
+        this.v_y += G * t;
+        this.y += this.v_y * t;
+        this.x += this.v_x * t;
+        if (this.y > MAX_Y) {
+          this.y = 2 * MAX_Y - this.y;
+          this.v_y = -(this.v_y / GROUND_SLOW_FACTOR);
+          this.v_x = this.v_x / GROUND_SLOW_FACTOR;
+        }
+        if (this.y < MIN_Y) {
+          this.y = 2 * MIN_Y - this.y;
+          this.v_y = -(this.v_y / GROUND_SLOW_FACTOR);
+          this.v_x = this.v_x / GROUND_SLOW_FACTOR;
+        }
+        if (this.x > MAX_X) {
+          this.x = 2 * MAX_X - this.x;
+          this.v_y = this.v_y / GROUND_SLOW_FACTOR;
+          this.v_x = -(this.v_x / GROUND_SLOW_FACTOR);
+        }
+        if (this.x < MIN_X) {
+          this.x = 2 * MIN_X - this.x;
+          this.v_y = this.v_y / GROUND_SLOW_FACTOR;
+          this.v_x = -(this.v_x / GROUND_SLOW_FACTOR);
+        }
+        if (this.y < 0) {
+          this.y = MAX_Y;
+          this.v_y = 0;
         }
 
-    </style>
-    <script>
-        console.log("Ball throw");
+        this.display();
+        setTimeout(this.move.bind(this), FREQ);
+      }
 
-        /** Static parameters */
-        const PANEL_WIDTH = 1000; // px
-        const PANEL_HEIGHT = 600; // px
-        const FREQ = 3; // milliseconds
-        const BALL_SIZE = 10; // px
-        const GROUND_SLOW_FACTOR = 1.3; // no unit
-        const G = 0.001; // px / milliseconds^2
-        const ZERO_SPEED_THRESHOLD = 0.0005;
-        const ZERO_HEIGHT_THRESHOLD = PANEL_HEIGHT / 1000.0;
+      display() {
+        this.ball.style.left = this.x + "px";
+        this.ball.style.top = this.y + "px";
+      }
+    }
 
-        /** Calculated constants */
-        const MAX_Y = PANEL_HEIGHT - BALL_SIZE; // px
-        const MIN_Y = BALL_SIZE; // px
-        const MAX_X = PANEL_WIDTH - BALL_SIZE; // px
-        const MIN_X = BALL_SIZE; // px
-        
-        class BallEngine {
+    function randomSpeed() {
+      return (Math.random() - 0.5) * 2 * INITIAL_SPEED_FACTOR;
+    }
 
-            /** Variables */
-            x = 20; // px
-            y = 200; // px
-            ball; // dom element
-            v_x = 0; // px / milliseconds
-            v_y = 0; // px / milliseconds
-            t1; // milliseconds
-            
-            constructor(ball) {
-                this.ball = ball
-            }
+    function createBall(frame, x, y, v_x, v_y) {
+      if (v_x === undefined) {
+        v_x = randomSpeed();
+      }
+      if (v_y  === undefined) {
+        v_y = randomSpeed();
+      }
+      const ball = document.createElement("span");
+      ball.style.width = BALL_SIZE + "px";
+      ball.style.height = BALL_SIZE + "px";
+      ball.style.position = "absolute";
+      ball.style["background-color"] = "#00801b";
+      ball.style["border-radius"] = "50%";
+      frame.appendChild(ball);
+      const engine = new BallEngine(ball, x, y);
+      engine.start(v_x, v_y);
+    }
 
-            start(v_x, v_y) {
-                this.v_x += v_x;
-                this.v_y += v_y;
-                this.t1 = new Date().getTime();
-                this.display();
-                this.ball.style.display = "block";
-                this.move();
-            }
+    document.addEventListener('DOMContentLoaded', () => {
+      const frame = document.getElementById("frame");
+      frame.style.width = PANEL_WIDTH + "px";
+      frame.style.height = PANEL_HEIGHT + "px";
+      frame.style.display = "block";
 
-            move() {
-                const now = new Date().getTime();
-                const t = now - this.t1;
-                this.t1 = now;
-                console.log(
-                    `t:${t} ; x:${this.x} ; y:${this.y} ; v_x:${this.v_x} ; v_y:${this.v_y}`
-                );
+      frame.addEventListener("click", function (e) {
+        const x = e.x - frame.offsetLeft;
+        const y = e.y - frame.offsetTop;
+        createBall(frame, x, y);
+      });
 
-                if (
-                    (MAX_Y - this.y) < ZERO_HEIGHT_THRESHOLD
-                    && Math.abs(this.v_y) < ZERO_SPEED_THRESHOLD 
-                    && Math.abs(this.v_x) < ZERO_SPEED_THRESHOLD
-                ) {
-                    this.v_x = 0;
-                    this.v_y = 0;
-                    this.display();
-                    return;
-                }
+    });
 
-                this.v_y += G * t;
-                this.y += this.v_y * t;
-                this.x += this.v_x * t;
-                if (this.y > MAX_Y) {
-                    this.y = 2 * MAX_Y - this.y;
-                    this.v_y = -(this.v_y / GROUND_SLOW_FACTOR);
-                    this.v_x = this.v_x / GROUND_SLOW_FACTOR;
-                }
-                if (this.y < MIN_Y) {
-                    this.y = 2 * MIN_Y - this.y;
-                    this.v_y = -(this.v_y / GROUND_SLOW_FACTOR);
-                    this.v_x = this.v_x / GROUND_SLOW_FACTOR;
-                }
-                if (this.x > MAX_X) {
-                    this.x = 2 * MAX_X - this.x;
-                    this.v_y = this.v_y / GROUND_SLOW_FACTOR;
-                    this.v_x = -(this.v_x / GROUND_SLOW_FACTOR);
-                }
-                if (this.x < MIN_X) {
-                    this.x = 2 * MIN_X - this.x;
-                    this.v_y = this.v_y / GROUND_SLOW_FACTOR;
-                    this.v_x = -(this.v_x / GROUND_SLOW_FACTOR);
-                }
-                if (this.y < 0) {
-                    this.y = MAX_Y;
-                    this.v_y = 0;
-                }
-
-                this.display();
-                setTimeout(this.move.bind(this), FREQ);
-            }
-
-            display() {
-                this.ball.style.left = this.x + "px";
-                this.ball.style.top = this.y + "px";
-            }
-        }
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            const frame = document.getElementById("frame");
-            frame.style.width = PANEL_WIDTH + "px";
-            frame.style.height = PANEL_HEIGHT + "px";
-            frame.style.display = "block";
-
-            const ball = document.getElementById('ball');
-            ball.style.width = BALL_SIZE + "px";
-            ball.style.height = BALL_SIZE + "px";
-            const engine = new BallEngine(ball);
-
-            document.getElementById("start-btn").addEventListener("click", function() {
-                const init_v_x_btn = document.getElementById("init-v_x-btn");
-                const init_v_y_btn = document.getElementById("init-v_y-btn");
-                const v_x = parseFloat(init_v_x_btn.value);
-                const v_y = parseFloat(init_v_y_btn.value);
-                engine.start(v_x, v_y);
-            });
-        });
-
-    </script>
+  </script>
 </head>
 <body>
 <h1>Ball throw</h1>
 
-<span>x-speed:</span><input id="init-v_x-btn" type="number" value="0.2">
-<span>y-speed:</span><input id="init-v_y-btn" type="number" value="-0.2">
-<input id="start-btn" type="button" value="Start">
+<p>Click inside the frame</p>
 
 <div id="frame">
-    <span id="ball"></span>
+  <span id="ball"></span>
 </div>
 
 </body>
