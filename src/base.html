@@ -14,59 +14,26 @@
     }
 
   </style>
-  <script src="./script.js"></script>
+  <script type="text/javascript" src="./script.js"></script>
   <script>
     console.log("Ball throw");
 
     /** Static parameters */
     const PANEL_WIDTH = 1000; // px
     const PANEL_HEIGHT = 600; // px
-    const FREQ = 3; // milliseconds
-    const BALL_SIZE = 10; // px
-    const GROUND_SLOW_FACTOR = 1.1; // no unit
-    const G = 0.001; // px / milliseconds^2
-    const ZERO_SPEED_THRESHOLD = 0.0005; // px / milliseconds
-    const ZERO_HEIGHT_THRESHOLD = PANEL_HEIGHT / 1000.0; // no unit
-    const INITIAL_SPEED_FACTOR = 1; // px / milliseconds
-
-    /** Calculated constants */
-    const MAX_Y = PANEL_HEIGHT - BALL_SIZE; // px
-    const MIN_Y = BALL_SIZE; // px
-    const MAX_X = PANEL_WIDTH - BALL_SIZE; // px
-    const MIN_X = BALL_SIZE; // px
-
-    function randomSpeed() {
-      return (Math.random() - 0.5) * 2 * INITIAL_SPEED_FACTOR;
-    }
-
-    function createBall(frame, x, y, v_x, v_y) {
-      if (v_x === undefined) {
-        v_x = randomSpeed();
-      }
-      if (v_y  === undefined) {
-        v_y = randomSpeed();
-      }
-      const ball = document.createElement("span");
-      ball.style.width = BALL_SIZE + "px";
-      ball.style.height = BALL_SIZE + "px";
-      ball.style.position = "absolute";
-      ball.style["background-color"] = "#00801b";
-      ball.style["border-radius"] = "50%";
-      frame.appendChild(ball);
-      const engine = new BallEngine(ball, x, y);
-      engine.start(v_x, v_y);
-    }
 
     document.addEventListener('DOMContentLoaded', () => {
       const frame = document.getElementById("frame");
       frame.style.width = PANEL_WIDTH + "px";
       frame.style.height = PANEL_HEIGHT + "px";
       frame.style.display = "block";
+      const engine = new BallEngine(frame, PANEL_WIDTH, PANEL_HEIGHT);
 
       frame.addEventListener("click", function (e) {
         const x = e.x - frame.offsetLeft;
         const y = e.y - frame.offsetTop;
-        createBall(frame, x, y);
+        const ball = document.createElement("span");
+        engine.createBall(ball, x, y);
       });
 
     });
