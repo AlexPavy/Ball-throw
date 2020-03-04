@@ -27,7 +27,10 @@
       frame.style.width = PANEL_WIDTH + "px";
       frame.style.height = PANEL_HEIGHT + "px";
       frame.style.display = "block";
-      const engine = new BallEngine(frame, PANEL_WIDTH, PANEL_HEIGHT);
+      const engine = new BallEngine(frame, {
+        PANEL_WIDTH,
+        PANEL_HEIGHT,
+      });
 
       frame.addEventListener("click", function (e) {
         const x = e.x - frame.offsetLeft;
