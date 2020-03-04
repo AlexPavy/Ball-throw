@@ -1,0 +1,29 @@
+{
+  "name": "ball-throw",
+  "version": "1.0.0",
+  "description": "Throw ball",
+  "main": "base.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexPavy/Ball-throw.git"
+  },
+  "keywords": [
+    "ball",
+    "throw"
+  ],
+  "author": "Alex Pavy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlexPavy/Ball-throw/issues"
+  },
+  "homepage": "https://github.com/AlexPavy/Ball-throw#readme",
+  "dependencies": {
+    "gulp": "^4.0.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-connect": "^5.7.0",
+    "gulp-uglify": "^3.0.2"
+  }
+}
