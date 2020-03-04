@@ -20,4 +20,4 @@ gulp.task('serve', function() {
   })
 });
 
-gulp.task('build', gulp.series('html', 'js', 'serve'));
+gulp.task('run', gulp.series('html', 'js', 'serve'));

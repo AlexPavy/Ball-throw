@@ -106,7 +106,7 @@ class SingleBall {
     this.y += this.v_y * this.dt;
     this.x += this.v_x * this.dt;
 
-    // bounce if on ground
+    // bounce if hit ground or wall
     if (this.y > this.params.MAX_Y) {
       this.y = 2 * this.params.MAX_Y - this.y;
       this.v_y = -(this.v_y / this.params.GROUND_SLOW_FACTOR);

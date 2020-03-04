@@ -4,6 +4,7 @@
   "description": "Throw ball",
   "main": "base.html",
   "scripts": {
+    "serve": "gulp run",
     "test": "jest"
   },
   "repository": {
