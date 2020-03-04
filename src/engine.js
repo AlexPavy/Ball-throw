@@ -127,4 +127,13 @@ class SingleBall {
   }
 }
 
-window.BallEngine = BallEngine;
+if (window) {
+  window.BallEngine = BallEngine;
+}
+
+if (module) {
+  module.exports = {
+    BallEngine,
+    SingleBall,
+  }
+}
